@@ -60,28 +60,24 @@ public class IndexManager {
 
         File[] files = rootFolder.listFiles();
 
-        try{
-            for(File file : files)
-            {
+
+        if(files!=null) {
+            for (File file : files) {
 
                 //a file will be a leaf node of the tree
                 //a folder may or may not be a leaf node.
-                if(file.isFile()==false)
-                {
+                if (file.isFile() == false) {
                     //this is a directory
                     createIndex(file.getAbsolutePath(), currFolder);
-                }
-                else{
-                    Node fileInsideParent = new FileNode(file.getName(),FileType.FILE,file.getAbsolutePath());// a file won't have children.
+                } else {
+                    Node fileInsideParent = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());// a file won't have children.
                     currFolder.children.add(fileInsideParent);
                 }
             }
-        }catch(NullPointerException e)
-        {
-            System.out.println(e.getMessage());
         }
-
     }
+
+
 
     public void printIndex()
     {
