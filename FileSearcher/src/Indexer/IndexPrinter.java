@@ -3,6 +3,7 @@ package Indexer;
 import java.util.LinkedList;
 import java.util.Queue;
 
+// prints all the filenames in BFS manner
 public class IndexPrinter {
     public void printIndex(DirNode head)
     {
