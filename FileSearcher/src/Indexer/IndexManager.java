@@ -58,8 +58,9 @@ public class IndexManager {
             parent.children.add(currFolder);
         }
 
+        File[] files = rootFolder.listFiles();
+
         try{
-            File[] files = rootFolder.listFiles();
             for(File file : files)
             {
 
