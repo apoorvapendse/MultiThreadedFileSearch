@@ -10,7 +10,7 @@ import java.util.Queue;
 
 
 public class IndexManager {
-    class Node
+    static class Node
     {
         String filename;
         FileType fileType;
@@ -24,7 +24,7 @@ public class IndexManager {
     }
 
 
-    class DirNode extends Node{
+    static class DirNode extends Node{
         List<Node> children;
         public DirNode(String filename, FileType fileType, String absolutePath, List<Node> children) {
             super(filename,fileType,absolutePath);
@@ -35,7 +35,7 @@ public class IndexManager {
         }
     }
 
-    class FileNode extends Node{
+    static class FileNode extends Node{
         public FileNode(String filename, FileType fileType, String absolutePath) {
             super(filename,fileType,absolutePath);
         }
