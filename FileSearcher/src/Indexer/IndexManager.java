@@ -66,7 +66,7 @@ public class IndexManager {
 
                 //a file will be a leaf node of the tree
                 //a folder may or may not be a leaf node.
-                if (file.isFile() == false) {
+                if (!file.isFile()) {
                     //this is a directory
                     createIndex(file.getAbsolutePath(), currFolder);
                 } else {
