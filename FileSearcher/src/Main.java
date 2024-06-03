@@ -1,9 +1,10 @@
 import Indexer.IndexManager;
 import SearchManager.SearchManager;
-import SearchManager.SingleThreadedBFS;
+
 import java.nio.file.Path;
 import java.util.List;
 
+import static SearchManager.SearchManager.singleThreadedBFS;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -14,8 +15,8 @@ public class Main {
         String searchTerm = args[0];
         IndexManager im = new IndexManager(Path.of("FileSearcher/search").toAbsolutePath().toString());
 
-        List<String> res = SingleThreadedBFS.singleThreadedBFS(im, searchTerm);
-        System.out.println(res);
+//        List<String> res = SearchManager.singleThreadedBFS(im, searchTerm);
+//        System.out.println(res);
 
         System.out.println("Single Threaded DFS");
         SearchManager.singleThreadedDFS(im,"hello.txt");
