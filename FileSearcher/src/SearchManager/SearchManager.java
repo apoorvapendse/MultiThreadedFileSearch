@@ -15,6 +15,9 @@ public class SearchManager {
         return SingleThreadedBFS.singleThreadedBFS(im, key);
     }
 
+    public  static List<String> multiThreadedBFS(IndexManager im , String key) {
+        return MultiThreadedBFS.multiThreadedBFS(im, key);
+    }
     public static void singleThreadedDFS(IndexManager im, String key)
     {
         new SingleThreadDFS(im,key);

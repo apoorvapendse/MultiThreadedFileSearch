@@ -4,7 +4,6 @@ import SearchManager.SearchManager;
 import java.nio.file.Path;
 import java.util.List;
 
-import static SearchManager.SearchManager.singleThreadedBFS;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -18,8 +17,11 @@ public class Main {
 //        List<String> res = SearchManager.singleThreadedBFS(im, searchTerm);
 //        System.out.println(res);
 
-        System.out.println("Single Threaded DFS");
-        SearchManager.singleThreadedDFS(im,"hello.txt");
+//        System.out.println("Single Threaded DFS");
+//        SearchManager.singleThreadedDFS(im,"hello.txt");
+
+        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
+        System.out.println(res);
     }
 
 }
