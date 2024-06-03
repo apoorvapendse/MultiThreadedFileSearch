@@ -19,7 +19,7 @@ public class SearchManager {
 
     public static List<String> singleThreadedBFS(IndexManager indexManager, String key) {
         System.out.println("running single threaded BFS on search term " + key);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         Deque<DirNode> queue = new ArrayDeque<>();
         DirNode head = indexManager.getHead();
 
@@ -43,5 +43,10 @@ public class SearchManager {
         }
 
         return results;
+    }
+
+    public static void singleThreadedDFS(IndexManager im, String key)
+    {
+        new SingleThreadDFS(im,key);
     }
 }

@@ -11,10 +11,15 @@ public class Main {
         if(args.length < 1) {
             throw new Exception("Pass proper arguments");
         }
+
         String searchTerm = args[0];
         IndexManager im = new IndexManager(Path.of("FileSearcher/search").toAbsolutePath().toString());
+
         List<String> res = SearchManager.singleThreadedBFS(im, searchTerm);
         System.out.println(res);
+
+        System.out.println("Single Threaded DFS");
+        SearchManager.singleThreadedDFS(im,"hello.txt");
     }
 
 }
