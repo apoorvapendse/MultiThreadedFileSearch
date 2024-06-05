@@ -22,8 +22,7 @@ public class MultiThreadedBFS {
 
         do {
             if (!queue.isEmpty()) {
-                DirNode curr = queue.poll();
-                executor.execute(new BFSWorker(curr, queue, results, key));
+                executor.execute(new BFSWorker(queue, results, key));
             }
             System.out.println("");
         } while (executor.getActiveCount() > 0 || !queue.isEmpty());
@@ -43,9 +42,9 @@ class BFSWorker implements Runnable {
     private List<String> results;
     private String searchKey;
 
-    BFSWorker(DirNode node, BlockingQueue<DirNode> q, List<String> results, String searchKey) {
-        this.node = node;
+    BFSWorker(BlockingQueue<DirNode> q, List<String> results, String searchKey) {
         this.queue = q;
+        this.node = queue.poll();
         this.results = results;
         this.searchKey = searchKey;
     }
