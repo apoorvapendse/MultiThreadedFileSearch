@@ -24,11 +24,10 @@ public class MultiThreadedBFS {
             if (!queue.isEmpty()) {
                 executor.execute(new BFSWorker(queue, results, key));
             }
-            System.out.println("");
         } while (executor.getActiveCount() > 0 || !queue.isEmpty());
         executor.shutdown();
         try {
-            System.out.println(executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS));
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
         }catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -37,23 +36,23 @@ public class MultiThreadedBFS {
 }
 
 class BFSWorker implements Runnable {
-    private DirNode node;
+//    private DirNode node;
     private BlockingQueue<DirNode> queue;
     private List<String> results;
     private String searchKey;
 
     BFSWorker(BlockingQueue<DirNode> q, List<String> results, String searchKey) {
         this.queue = q;
-        this.node = queue.poll();
         this.results = results;
         this.searchKey = searchKey;
     }
 
     public void run() {
+        DirNode node = queue.poll();
         if (node == null || node.getChildren() == null) {
             return;
         }
-        System.out.println("BFSWorker running on " + node.filename);
+//        System.out.println("BFSWorker running on " + node.filename);
         for (Node child : node.getChildren()) {
             // if the path is a dir add its children to queue
             if (child.fileType == FileType.DIR) {
@@ -62,7 +61,7 @@ class BFSWorker implements Runnable {
             // else if file matches to search key append to results
             else {
                 if (FileNameMatcher.match(child.filename, searchKey)) {
-                    System.out.println(child.absolutePath);
+//                    System.out.println(child.absolutePath);
                     results.add(child.absolutePath);
                 }
             }
