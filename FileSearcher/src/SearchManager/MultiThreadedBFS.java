@@ -5,37 +5,45 @@ import Indexer.FileType;
 import Indexer.IndexManager;
 import Indexer.Node;
 
+import  java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 public class MultiThreadedBFS {
     public static List<String> multiThreadedBFS(IndexManager indexManager, String key) {
-        ExecutorService executor = Executors.newFixedThreadPool(4);
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         BlockingQueue<DirNode> queue = new LinkedBlockingQueue<>();
-        ArrayList<String> results = new ArrayList<>();
+//        ArrayList<String> results = new ArrayList<>();
+        List<String> results = Collections.synchronizedList(new ArrayList<>());
         DirNode head = indexManager.getHead();
 
         queue.offer(head);
 
-        while(!queue.isEmpty()) {
-            DirNode curr = queue.poll();
-            executor.execute(new BFSWorker(curr, queue, results, key));
-        }
+        do {
+            if (!queue.isEmpty()) {
+                DirNode curr = queue.poll();
+                executor.execute(new BFSWorker(curr, queue, results, key));
+            }
+            System.out.println("");
+        } while (executor.getActiveCount() > 0 || !queue.isEmpty());
         executor.shutdown();
+        try {
+            System.out.println(executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS));
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return results;
     }
 }
 
-class BFSWorker implements Runnable{
+class BFSWorker implements Runnable {
     private DirNode node;
     private BlockingQueue<DirNode> queue;
-    private ArrayList<String> results;
+    private List<String> results;
     private String searchKey;
-    BFSWorker(DirNode node, BlockingQueue<DirNode> q, ArrayList<String> results, String searchKey) {
+
+    BFSWorker(DirNode node, BlockingQueue<DirNode> q, List<String> results, String searchKey) {
         this.node = node;
         this.queue = q;
         this.results = results;
@@ -43,9 +51,10 @@ class BFSWorker implements Runnable{
     }
 
     public void run() {
-        if(node == null || node.getChildren() == null) {
+        if (node == null || node.getChildren() == null) {
             return;
         }
+        System.out.println("BFSWorker running on " + node.filename);
         for (Node child : node.getChildren()) {
             // if the path is a dir add its children to queue
             if (child.fileType == FileType.DIR) {
@@ -54,6 +63,7 @@ class BFSWorker implements Runnable{
             // else if file matches to search key append to results
             else {
                 if (FileNameMatcher.match(child.filename, searchKey)) {
+                    System.out.println(child.absolutePath);
                     results.add(child.absolutePath);
                 }
             }
