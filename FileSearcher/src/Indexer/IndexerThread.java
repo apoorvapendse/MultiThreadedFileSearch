@@ -28,10 +28,10 @@ public class IndexerThread implements  Runnable{
                 {
                     DirNode subdirectory = new DirNode(file.getName(),FileType.DIR,file.getAbsolutePath(),new ArrayList<>());
                     IndexerThread it = new IndexerThread(subdirectory);
-                    root.children.add(subdirectory);
+                    root.addChild(subdirectory);
                 }
                 else{
-                    root.children.add(new FileNode(file.getName(),FileType.FILE,file.getAbsolutePath()));
+                    root.addChild(new FileNode(file.getName(),FileType.FILE,file.getAbsolutePath()));
                 }
             }
         }

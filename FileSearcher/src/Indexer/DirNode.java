@@ -3,7 +3,7 @@ package Indexer;
 import java.util.List;
 
 public class DirNode extends Node{
-    List<Node> children;
+    private List<Node> children;
     public DirNode(String filename, FileType fileType, String absolutePath, List<Node> children) {
         super(filename,fileType,absolutePath);
         this.children = children;
@@ -11,5 +11,9 @@ public class DirNode extends Node{
     public List<Node> getChildren() {
         return children;
     }
+    public void addChild(Node n) {
+        this.children.add(n);
+    }
+
 }
 
