@@ -20,18 +20,24 @@ public class IndexerThread implements  Runnable{
     {
         File currFile = new File(root.absolutePath);
         System.out.println(currFile.getName());
-
-        for(File file : Objects.requireNonNull(currFile.listFiles()))
+        try
         {
-            if(file.isDirectory())
+            for(File file : Objects.requireNonNull(currFile.listFiles()))
             {
-                DirNode subdirectory = new DirNode(file.getName(),FileType.DIR,file.getAbsolutePath(),new ArrayList<>());
-                IndexerThread it = new IndexerThread(subdirectory);
-                root.children.add(subdirectory);
+                if(file.isDirectory())
+                {
+                    DirNode subdirectory = new DirNode(file.getName(),FileType.DIR,file.getAbsolutePath(),new ArrayList<>());
+                    IndexerThread it = new IndexerThread(subdirectory);
+                    root.children.add(subdirectory);
+                }
+                else{
+                    root.children.add(new FileNode(file.getName(),FileType.FILE,file.getAbsolutePath()));
+                }
             }
-            else{
-                root.children.add(new FileNode(file.getName(),FileType.FILE,file.getAbsolutePath()));
-            }
+        }
+        catch(NullPointerException e)
+        {
+            //Directory is basically empty
         }
 
     }
