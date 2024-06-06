@@ -16,12 +16,12 @@ public class Main {
 
 //        List<String> res = SearchManager.singleThreadedBFS(im, searchTerm);
 //        System.out.println(res);
+        Thread.sleep(500);
+        System.out.println("Single Threaded DFS");
+        SearchManager.singleThreadedDFS(im,"hello.txt");
 
-//        System.out.println("Single Threaded DFS");
-//        SearchManager.singleThreadedDFS(im,"hello.txt");
-
-        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
-        System.out.println(res);
+//        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
+//        System.out.println(res);
     }
 
 }

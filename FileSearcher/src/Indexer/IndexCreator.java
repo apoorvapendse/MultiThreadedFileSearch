@@ -10,7 +10,7 @@ public class IndexCreator {
     {
         File rootFolder = new File(rootFolderPath);
         DirNode root = new DirNode(rootFolder.getName(),FileType.DIR ,rootFolder.getAbsolutePath(),new ArrayList<Node>());
-        createIndexRecursively(rootFolder,root);
+        IndexerThread it = new IndexerThread(root);
         return root;
     }
 
