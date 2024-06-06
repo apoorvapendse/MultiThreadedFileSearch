@@ -13,11 +13,12 @@ public class Main {
         }
 
         String searchTerm = args[0];
-        IndexManager im = new IndexManager(Path.of("C:\\Users\\Administrator\\Documents\\GitHub\\MultiThreadedFileSearch").toAbsolutePath().toString());
+        IndexManager im = new IndexManager(Path.of("FileSearcher/search").toAbsolutePath().toString());
 
 //        List<String> res = SearchManager.singleThreadedBFS(im, searchTerm);
 //        System.out.println(res);
-
+        IndexPrinter ip = new IndexPrinter();
+        ip.printIndex(im.getHead());
 
         System.out.println("Single Threaded DFS");
         SearchManager.singleThreadedDFS(im,"hello.txt");

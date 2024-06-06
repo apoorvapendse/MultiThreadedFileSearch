@@ -1,56 +1,50 @@
 package ThreadSafeQueue;
 
-
 import java.util.LinkedList;
 import java.util.List;
 
-public class ThreadSafeQueue<T>  {
-    //T will be DirNode in our case.
-    private List<T> arr;
-    private final Object lock1;
-    private final Object lock2;
-    private double maxSize = 1e5;
-    public ThreadSafeQueue()
-    {
+public class ThreadSafeQueue<T> {
+    // T will be DirNode in our case.
+    private final List<T> arr;
+    private final Object lock;
+    private final double maxSize = 1e5;
+
+    public ThreadSafeQueue() {
         arr = new LinkedList<>();
-        this.lock1 = new Object();
-        this.lock2 = new Object();
+        this.lock = new Object();
     }
 
-    //synchronized keyword uses this as the lock.
-    public void offer(T obj) {
-        synchronized (lock1) {
+    public void offer(T obj,int timeoutLimit) {
+        long endTime = System.currentTimeMillis() + timeoutLimit;
+
+        synchronized (lock) {
             while (arr.size() == maxSize) {
+                if(endTime - System.currentTimeMillis()<=0)return ;
                 try {
-                    lock1.wait();
+                    lock.wait();
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
             }
-            synchronized (lock2) {
-                arr.add(obj);
-                lock2.notifyAll();
-            }
+            arr.add(obj);
+            lock.notifyAll();
         }
     }
 
-    public T poll() {
-        synchronized (lock2) {
+    public T poll(int timeoutLimit) {
+        long endTime = System.currentTimeMillis() + timeoutLimit;
+        synchronized (lock) {
             while (arr.isEmpty()) {
                 try {
-                    lock2.wait();
+                    if(endTime - System.currentTimeMillis()<=0)return null;
+                    lock.wait();
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
             }
-            T item;
-            synchronized (lock1) {
-                item = arr.remove(0);
-                lock1.notifyAll();
-            }
+            T item = arr.remove(0);
+            lock.notifyAll();
             return item;
         }
     }
-
-
 }
