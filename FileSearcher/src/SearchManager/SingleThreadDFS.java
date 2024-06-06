@@ -23,6 +23,7 @@ public class SingleThreadDFS {
 
     private void performDFS(List<String> matchingResults,String key,DirNode curr)
     {
+
         for(Node child : curr.getChildren())
         {
             if(child.fileType== FileType.FILE)
