@@ -8,6 +8,7 @@ import ThreadSafeQueue.ThreadSafeQueue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ThreadPoolManager {
@@ -20,39 +21,47 @@ public class ThreadPoolManager {
     }
 
     public void startThreadPool(DirNode root) {
-        q.offer(root,100);
-        ArrayList<Thread> threadList = new ArrayList<>();
+        q.offer(root);
+        List<Thread> threadList = new ArrayList<>();
 
         for (int i = 0; i < maxThreads; i++) {
             Thread t = new Thread(() -> {
-                while (true) {
-                    DirNode curr = q.poll(100);
-                    if (curr == null) {
-                        return; // Exit the thread if the queue is empty after waiting for a while
-                    }
 
-                    File currDir = new File(curr.absolutePath);
-                    try {
-                        for (File file : Objects.requireNonNull(currDir.listFiles())) {
-                            if (file.isDirectory()) {
-                                DirNode subdirectory = new DirNode(file.getName(), FileType.DIR, file.getAbsolutePath(), new ArrayList<>());
-                                curr.addChild(subdirectory);
-                                q.offer(subdirectory,100);
-                            } else if (file.isFile()) {
-                                FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
-                                curr.addChild(subfile);
-                            }
+                    while(true)
+                    {
+
+                        DirNode curr = q.poll();
+                        if (curr == null) {
+                            return;
                         }
 
+                        File currDir = new File(curr.absolutePath);
+                        try {
+                            for (File file : Objects.requireNonNull(currDir.listFiles())) {
+                                if (file.isDirectory()) {
+                                    DirNode subdirectory = new DirNode(file.getName(), FileType.DIR, file.getAbsolutePath(), new ArrayList<>());
+                                    curr.addChild(subdirectory);
+                                    q.offer(subdirectory);
+                                } else if (file.isFile()) {
+                                    FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
+                                    curr.addChild(subfile);
+                                }
+                            }
 
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+
                     }
-                }
+
+
             });
+
 
             threadList.add(t);
             t.start();
+
         }
         System.out.println(threadList.size());
         // Wait for all threads to finish

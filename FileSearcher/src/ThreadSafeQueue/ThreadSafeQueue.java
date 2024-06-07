@@ -14,12 +14,9 @@ public class ThreadSafeQueue<T> {
         this.lock = new Object();
     }
 
-    public void offer(T obj,int timeoutLimit) {
-        long endTime = System.currentTimeMillis() + timeoutLimit;
-
+    public void offer(T obj) {
         synchronized (lock) {
             while (arr.size() == maxSize) {
-                if(endTime - System.currentTimeMillis()<=0)return ;
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
@@ -31,13 +28,13 @@ public class ThreadSafeQueue<T> {
         }
     }
 
-    public T poll(int timeoutLimit) {
-        long endTime = System.currentTimeMillis() + timeoutLimit;
+    public T poll() {
+        long endTime = System.currentTimeMillis() + 1000;
         synchronized (lock) {
             while (arr.isEmpty()) {
+                if (System.currentTimeMillis() >= endTime) return null;
                 try {
-                    if(endTime - System.currentTimeMillis()<=0)return null;
-                    lock.wait();
+                    lock.wait(endTime - System.currentTimeMillis());
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
