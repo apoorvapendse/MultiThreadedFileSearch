@@ -7,7 +7,7 @@ public class ThreadSafeQueue<T> {
     // T will be DirNode in our case.
     private final List<T> arr;
     private final Object lock;
-    private final double maxSize = 1e5;
+    private final double maxSize = 1e6;
 
     public ThreadSafeQueue() {
         arr = new LinkedList<>();
