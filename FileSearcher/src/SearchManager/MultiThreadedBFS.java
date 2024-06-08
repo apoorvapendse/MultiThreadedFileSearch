@@ -4,33 +4,17 @@ import Indexer.DirNode;
 import Indexer.FileType;
 import Indexer.IndexManager;
 import Indexer.Node;
+import ThreadPoolManager.ThreadPoolManager;
 
-import  java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class MultiThreadedBFS {
     public static List<String> multiThreadedBFS(IndexManager indexManager, String key) {
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
-        BlockingQueue<DirNode> queue = new LinkedBlockingQueue<>();
-//        ArrayList<String> results = new ArrayList<>();
-        List<String> results = Collections.synchronizedList(new ArrayList<>());
-        DirNode head = indexManager.getHead();
-
-        queue.offer(head);
-
-        do {
-            if (!queue.isEmpty()) {
-                executor.execute(new BFSWorker(queue, results, key));
-            }
-        } while (executor.getActiveCount() > 0 || !queue.isEmpty());
-        executor.shutdown();
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ThreadPoolManager tpm = new ThreadPoolManager(4);
+        List<String> results;
+        DirNode root = indexManager.getHead();
+        results = tpm.startBFSSearchingThreads(root, key);
         return results;
     }
 }
