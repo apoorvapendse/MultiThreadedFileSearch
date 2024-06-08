@@ -17,4 +17,8 @@ public class IndexManager {
     public DirNode getHead() {
         return head;
     }
+    public void setHead(DirNode root)
+    {
+        this.head = root;
+    }
 }
