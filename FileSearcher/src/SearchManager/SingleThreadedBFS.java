@@ -31,13 +31,13 @@ public class SingleThreadedBFS {
                 }
                 // else if file matches to search key append to results
                 else {
-                    if (FileNameMatcher.match(child.filename, key)) {
-                        results.add(child.absolutePath);
-                    }
+                    FileNameMatcher.match(child.filename, key,child.absolutePath);
                 }
             }
         }
 
+        results = FileNameMatcher.getMatchedFilePaths(3);
         return results;
+
     }
 }

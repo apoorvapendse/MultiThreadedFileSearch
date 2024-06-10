@@ -10,11 +10,11 @@ import Serializer.SerializationManager;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        if(args.length < 1) {
-            throw new Exception("Pass proper arguments");
-        }
+//        if(args.length < 1) {
+//            throw new Exception("Pass proper arguments");
+//        }
 
-        String searchTerm = args[0];
+//        String searchTerm = args[0];
         long startTime = System.currentTimeMillis();
         IndexManager im = new IndexManager(Path.of("C:/Users/Administrator/Documents/GitHub/MultiThreadedFileSearch").toAbsolutePath().toString());
 
@@ -35,7 +35,7 @@ public class Main {
         IndexPrinter ip = new IndexPrinter();
 
         im.setHead(sm.deserialize("save.txt"));
-        ip.printIndex(im.getHead());
+//        ip.printIndex(im.getHead());
 
 
 
@@ -44,8 +44,8 @@ public class Main {
 
 
 
-//        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
-//        System.out.println(res);
+        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
+        System.out.println(res);
     }
 
 }

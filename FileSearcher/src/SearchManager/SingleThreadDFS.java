@@ -16,7 +16,7 @@ public class SingleThreadDFS {
         DirNode head = indexManager.getHead();
         List<String> matchingResults = new ArrayList<>();
         performDFS(matchingResults,key,head);
-        System.out.println(matchingResults);
+//        System.out.println(matchingResults);
 
 //        Trees do not have cycle, no use tracking visited Nodes
     }
@@ -28,10 +28,7 @@ public class SingleThreadDFS {
         {
             if(child.fileType== FileType.FILE)
             {
-                boolean res = FileNameMatcher.match(child.filename,key);
-                if(res){
-                    matchingResults.add(child.absolutePath);
-                }
+                FileNameMatcher.match(child.filename,key,child.absolutePath);
             }
             else{
                 performDFS(matchingResults,key,(DirNode) child);

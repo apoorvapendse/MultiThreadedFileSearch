@@ -20,7 +20,7 @@ public class MultiThreadedBFS {
 }
 
 class BFSWorker implements Runnable {
-//    private DirNode node;
+    //    private DirNode node;
     private BlockingQueue<DirNode> queue;
     private List<String> results;
     private String searchKey;
@@ -44,11 +44,9 @@ class BFSWorker implements Runnable {
             }
             // else if file matches to search key append to results
             else {
-                if (FileNameMatcher.match(child.filename, searchKey)) {
-//                    System.out.println(child.absolutePath);
-                    results.add(child.absolutePath);
-                }
+                FileNameMatcher.match(child.filename, searchKey, child.absolutePath);
             }
         }
     }
+
 }

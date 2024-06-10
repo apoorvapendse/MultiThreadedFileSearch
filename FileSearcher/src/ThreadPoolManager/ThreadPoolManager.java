@@ -90,9 +90,7 @@ public class ThreadPoolManager {
                         }
                         // else if file matches to search key append to results
                         else {
-                            if (FileNameMatcher.match(child.filename, searchKey)) {
-                                results.add(child.absolutePath);
-                            }
+                             FileNameMatcher.match(child.filename, searchKey,child.absolutePath);
                         }
                     }
                 }
@@ -112,6 +110,7 @@ public class ThreadPoolManager {
         }
 
         System.out.println("mBFS finished");
+        results = FileNameMatcher.getMatchedFilePaths(3);
         return results;
     }
 }
