@@ -18,6 +18,46 @@ public class FileNameMatcher {
     // Use ConcurrentHashMap for thread-safe operations
     static Map<String, Integer> matchedFileChars = new ConcurrentHashMap<>();
 
+    private int calcLevenshteinDist(String word, String key) {
+        int[][] dist = new int[word.length()][key.length()];
+
+        /*
+         * initialize the dist array such as
+         * 0 1 2 ... key.length() - 1
+         * 1
+         * 2
+         * ..
+         * word.length() - 1
+         */
+        for (int i = 0; i < word.length(); i++) {
+            dist[i][0] = i;
+        }
+        for (int j = 0; j < key.length(); j++) {
+            dist[0][j] = j;
+        }
+
+        /*
+         * algorithm:
+         * compare characters of word and key in nested loop
+         * if characters are same
+         *      dist[i][j] = upper left neighbour of dist
+         * else
+         *      dist[i][j] = min(upper left, left, upper) neighbour
+         */
+        for (int i = 1; i <= word.length(); i++) {
+            for (int j = 1; j <= key.length(); j++) {
+                if (word.charAt(i - 1) == key.charAt(j - 1)) {
+                    dist[i][j] = dist[i - 1][j - 1];
+                } else {
+                    int minNeighbour = Math.min(dist[i - 1][j - 1], Math.min(dist[i - 1][j], dist[i][j - 1]));
+                    dist[i][j] = 1 + minNeighbour;
+                }
+            }
+        }
+
+        // Levenshtein distance is the right bottom most corner element of dist
+        return dist[word.length() - 1][key.length() - 1];
+    }
     public static void match(String filename, String key, String absolutePath) {
         // Initialize the count if not already present
         matchedFileChars.putIfAbsent(absolutePath, 0);
