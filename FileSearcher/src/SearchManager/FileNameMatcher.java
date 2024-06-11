@@ -1,25 +1,30 @@
 package SearchManager;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class FileNameMatcher {
 
     static class FileMatchNode {
-        String name;
-        int matchedNums;
+        String filename;
+        String absPath;
+        int relevancyIndex;
 
-        FileMatchNode(String n, int count) {
-            this.name = n;
-            this.matchedNums = count;
+        FileMatchNode(String filename, String absPath, int relevancyIndex) {
+            this.filename = filename;
+            this.absPath = absPath;
+            this.relevancyIndex = relevancyIndex;
+        }
+
+        @Override
+        public String toString() {
+            return absPath;
         }
     }
 
-    // Use ConcurrentHashMap for thread-safe operations
-    static Map<String, Integer> matchedFileChars = new ConcurrentHashMap<>();
+    private List<FileMatchNode> matchedFiles = new ArrayList<>();
 
     private int calcLevenshteinDist(String word, String key) {
-        int[][] dist = new int[word.length()][key.length()];
+        int[][] dist = new int[word.length() + 1][key.length() + 1];
 
         /*
          * initialize the dist array such as
@@ -49,8 +54,8 @@ public class FileNameMatcher {
                 if (word.charAt(i - 1) == key.charAt(j - 1)) {
                     dist[i][j] = dist[i - 1][j - 1];
                 } else {
-                    int minNeighbour = Math.min(dist[i - 1][j - 1], Math.min(dist[i - 1][j], dist[i][j - 1]));
-                    dist[i][j] = 1 + minNeighbour;
+                    int minNeighbor = Math.min(dist[i - 1][j - 1], Math.min(dist[i - 1][j], dist[i][j - 1]));
+                    dist[i][j] = 1 + minNeighbor;
                 }
             }
         }
@@ -58,37 +63,42 @@ public class FileNameMatcher {
         // Levenshtein distance is the right bottom most corner element of dist
         return dist[word.length() - 1][key.length() - 1];
     }
-    public static void match(String filename, String key, String absolutePath) {
-        // Initialize the count if not already present
-        matchedFileChars.putIfAbsent(absolutePath, 0);
 
-        for (char c : key.toCharArray()) {
-            if (filename.contains(String.valueOf(c))) {
-                // Use compute to safely update the value in a thread-safe manner
-                matchedFileChars.compute(absolutePath, (k, v) -> v + 1);
-            }
+    public void match(String filename, String key, String absPath) {
+        /*
+         * matching algorithm:
+         * 1. calculate Levenshtein Distance (LD)
+         * 2. get filename.length
+         * 3. calculate relevancyIndex = filename.length - LD
+         * 4. if relevancyIndex > 0
+         *      add the file to matchedFiles array
+         * 5. sort matchedFiles array on two parameters
+         *      i. relevancyIndex
+         *      ii. filename.length
+         */
+        int LD = calcLevenshteinDist(filename, key);
+
+        if (LD < filename.length() * 3 / 4F) {
+            matchedFiles.add(new FileMatchNode(filename, absPath, LD));
         }
     }
 
-    public static List<String> getMatchedFilePaths(int minimumMatchingCharCount) {
-        // Converting map to a list
-        List<FileMatchNode> list = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> entry : matchedFileChars.entrySet()) {
-            list.add(new FileMatchNode(entry.getKey(), entry.getValue()));
-        }
-
-        // sort the list based on matched chars
-        Collections.sort(list, (a, b) -> b.matchedNums - a.matchedNums);
-
-        // Collecting results based on minimumMatchingCharCount
-        List<String> results = new ArrayList<>();
-        for (FileMatchNode n : list) {
-            if (n.matchedNums > minimumMatchingCharCount) {
-                results.add(n.name);
+    public List<String> getMatchedFiles() {
+        matchedFiles.sort((f1, f2) -> {
+            if (f1.relevancyIndex != f2.relevancyIndex) {
+                return Integer.compare(f1.relevancyIndex, f2.relevancyIndex);
+            } else {
+                return Integer.compare(f1.filename.length(), f2.filename.length());
             }
+        });
+
+        List<String> matchedFileStrings = new ArrayList<>();
+        for (FileMatchNode matchedNode : matchedFiles) {
+            System.out.println(matchedNode.relevancyIndex);
+            matchedFileStrings.add(matchedNode.toString());
         }
-        return results;
+
+        return matchedFileStrings;
     }
 
 }
