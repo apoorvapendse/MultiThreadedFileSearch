@@ -69,10 +69,10 @@ public class ThreadPoolManager {
         System.out.println("All threads have finished execution");
     }
 
-    public List<String> startBFSSearchingThreads(DirNode root, String searchKey) {
+    public List<String> startBFSSearchingThreads(DirNode root, String searchKey, int limit) {
         q.offer(root);
         List<Thread> threadList = new ArrayList<>(maxThreads);
-        List<String> results = new ArrayList<>();
+        FileNameMatcher fm = new FileNameMatcher(limit);
 
         for (int i = 0; i < maxThreads; i++) {
             Thread t = new Thread(() -> {
@@ -90,7 +90,7 @@ public class ThreadPoolManager {
                         }
                         // else if file matches to search key append to results
                         else {
-                             FileNameMatcher.match(child.filename, searchKey,child.absolutePath);
+                            fm.match(child.filename, searchKey, child.absolutePath);
                         }
                     }
                 }
@@ -110,7 +110,6 @@ public class ThreadPoolManager {
         }
 
         System.out.println("mBFS finished");
-        results = FileNameMatcher.getMatchedFilePaths(3);
-        return results;
+        return fm.getMatchedFiles();
     }
 }
