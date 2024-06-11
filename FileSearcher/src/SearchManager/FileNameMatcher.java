@@ -21,7 +21,17 @@ public class FileNameMatcher {
         }
     }
 
-    private List<FileMatchNode> matchedFiles = new ArrayList<>();
+    private BoundedPriorityQueue<FileMatchNode> matchedFiles;
+
+    public FileNameMatcher(int maxMatches) {
+        matchedFiles = new BoundedPriorityQueue<FileMatchNode>(maxMatches, (f1, f2) -> {
+            if (f1.relevancyIndex != f2.relevancyIndex) {
+                return Integer.compare(f1.relevancyIndex, f2.relevancyIndex);
+            } else {
+                return Integer.compare(f1.filename.length(), f2.filename.length());
+            }
+        });
+    }
 
     private int calcLevenshteinDist(String word, String key) {
         int[][] dist = new int[word.length() + 1][key.length() + 1];
@@ -59,7 +69,6 @@ public class FileNameMatcher {
                 }
             }
         }
-
         // Levenshtein distance is the right bottom most corner element of dist
         return dist[word.length() - 1][key.length() - 1];
     }
@@ -79,28 +88,24 @@ public class FileNameMatcher {
 
         // preprocessing
         int lastIndex = filename.lastIndexOf('.');
-        if(lastIndex != -1) {
+        if (lastIndex != -1) {
             filename = filename.substring(0, lastIndex);
         }
         filename = filename.toLowerCase();
         key = key.toLowerCase();
+        if (filename.isEmpty()) {
+            System.out.println("filename without ext was empty for path: " + absPath);
+            return;
+        }
 
         int LD = calcLevenshteinDist(filename, key);
 
         if (LD < filename.length() * 3 / 4F) {
-            matchedFiles.add(new FileMatchNode(filename, absPath, LD));
+            matchedFiles.offer(new FileMatchNode(filename, absPath, LD));
         }
     }
 
     public List<String> getMatchedFiles() {
-        matchedFiles.sort((f1, f2) -> {
-            if (f1.relevancyIndex != f2.relevancyIndex) {
-                return Integer.compare(f1.relevancyIndex, f2.relevancyIndex);
-            } else {
-                return Integer.compare(f1.filename.length(), f2.filename.length());
-            }
-        });
-
         List<String> matchedFileStrings = new ArrayList<>();
         for (FileMatchNode matchedNode : matchedFiles) {
             System.out.println(matchedNode.relevancyIndex);

@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class MultiThreadedBFS {
-    public static List<String> multiThreadedBFS(IndexManager indexManager, String key) {
+    public static List<String> multiThreadedBFS(IndexManager indexManager, String key, int limit) {
         ThreadPoolManager tpm = new ThreadPoolManager(4);
         List<String> results;
         DirNode root = indexManager.getHead();
-        results = tpm.startBFSSearchingThreads(root, key);
+        results = tpm.startBFSSearchingThreads(root, key, limit);
         return results;
     }
 }
@@ -44,7 +44,7 @@ class BFSWorker implements Runnable {
             }
             // else if file matches to search key append to results
             else {
-                FileNameMatcher.match(child.filename, searchKey, child.absolutePath);
+//                FileNameMatcher.match(child.filename, searchKey, child.absolutePath);
             }
         }
     }

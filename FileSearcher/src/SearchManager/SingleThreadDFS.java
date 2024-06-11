@@ -11,27 +11,22 @@ import java.util.List;
 import java.util.Set;
 
 public class SingleThreadDFS {
-    SingleThreadDFS(IndexManager indexManager, String key)
-    {
+    SingleThreadDFS(IndexManager indexManager, String key, int limit) {
         DirNode head = indexManager.getHead();
-        List<String> matchingResults = new ArrayList<>();
-        performDFS(matchingResults,key,head);
-//        System.out.println(matchingResults);
+        FileNameMatcher fm = new FileNameMatcher(limit);
 
+        performDFS(key, head, fm);
+        System.out.println(fm.getMatchedFiles());
 //        Trees do not have cycle, no use tracking visited Nodes
     }
 
-    private void performDFS(List<String> matchingResults,String key,DirNode curr)
-    {
+    private void performDFS(String key, DirNode curr, FileNameMatcher fm) {
 
-        for(Node child : curr.getChildren())
-        {
-            if(child.fileType== FileType.FILE)
-            {
-                FileNameMatcher.match(child.filename,key,child.absolutePath);
-            }
-            else{
-                performDFS(matchingResults,key,(DirNode) child);
+        for (Node child : curr.getChildren()) {
+            if (child.fileType == FileType.FILE) {
+                fm.match(child.filename, key, child.absolutePath);
+            } else {
+                performDFS(key, (DirNode) child, fm);
             }
         }
 

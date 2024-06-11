@@ -6,16 +6,15 @@ import Indexer.IndexManager;
 import Indexer.Node;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
 public class SingleThreadedBFS {
-    public static List<String> singleThreadedBFS(IndexManager indexManager, String key) {
+    public static List<String> singleThreadedBFS(IndexManager indexManager, String key, int limit) {
         System.out.println("running single threaded BFS on search term " + key);
-        List<String> results = new ArrayList<>();
         Deque<DirNode> queue = new ArrayDeque<>();
         DirNode head = indexManager.getHead();
+        FileNameMatcher fm = new FileNameMatcher(limit);
 
         if (head == null) {
             return null;
@@ -31,12 +30,12 @@ public class SingleThreadedBFS {
                 }
                 // else if file matches to search key append to results
                 else {
-                    FileNameMatcher.match(child.filename, key,child.absolutePath);
+                    fm.match(child.filename, key, child.absolutePath);
                 }
             }
         }
 
-        results = FileNameMatcher.getMatchedFilePaths(3);
+        List<String> results = fm.getMatchedFiles();
         return results;
 
     }
