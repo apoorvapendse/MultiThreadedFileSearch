@@ -76,6 +76,15 @@ public class FileNameMatcher {
          *      i. relevancyIndex
          *      ii. filename.length
          */
+
+        // preprocessing
+        int lastIndex = filename.lastIndexOf('.');
+        if(lastIndex != -1) {
+            filename = filename.substring(0, lastIndex);
+        }
+        filename = filename.toLowerCase();
+        key = key.toLowerCase();
+
         int LD = calcLevenshteinDist(filename, key);
 
         if (LD < filename.length() * 3 / 4F) {
