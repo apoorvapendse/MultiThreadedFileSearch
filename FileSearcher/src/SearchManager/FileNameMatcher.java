@@ -21,7 +21,7 @@ public class FileNameMatcher {
         }
     }
 
-    private BoundedPriorityQueue<FileMatchNode> matchedFiles;
+    private final BoundedPriorityQueue<FileMatchNode> matchedFiles;
 
     public FileNameMatcher(int maxMatches) {
         matchedFiles = new BoundedPriorityQueue<FileMatchNode>(maxMatches, (f1, f2) -> {

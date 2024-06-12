@@ -20,6 +20,12 @@ public class BoundedPriorityQueue<T> implements Iterable<T> {
     public void offer(T element) {
         // if size is less than maxSize then remove the least relevant element
         if (size() == maxSize) {
+            // compare element with the least relevant element in the queue
+            // to check if its worth queuing it
+            T leastRelevantElem = minHeap.peek();
+            if (minHeap.comparator().compare(element, leastRelevantElem) >= 0) {
+                return;
+            }
             minHeap.poll();
         }
         minHeap.offer(element);
