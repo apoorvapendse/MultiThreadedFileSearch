@@ -1,4 +1,4 @@
-package SearchManager;
+package FIleNameMatcher;
 
 import java.util.*;
 

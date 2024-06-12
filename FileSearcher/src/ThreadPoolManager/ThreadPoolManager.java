@@ -4,7 +4,7 @@ import Indexer.DirNode;
 import Indexer.FileNode;
 import Indexer.FileType;
 import Indexer.Node;
-import SearchManager.FileNameMatcher;
+import FIleNameMatcher.FileNameMatcher;
 import ThreadSafeQueue.ThreadSafeQueue;
 
 import java.io.File;

@@ -1,5 +1,6 @@
 package SearchManager;
 
+import FIleNameMatcher.FileNameMatcher;
 import Indexer.DirNode;
 import Indexer.FileType;
 import Indexer.IndexManager;
@@ -35,8 +36,6 @@ public class SingleThreadedBFS {
             }
         }
 
-        List<String> results = fm.getMatchedFiles();
-        return results;
-
+        return fm.getMatchedFiles();
     }
 }
