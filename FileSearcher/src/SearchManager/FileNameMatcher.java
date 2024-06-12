@@ -94,7 +94,7 @@ public class FileNameMatcher {
         filename = filename.toLowerCase();
         key = key.toLowerCase();
         if (filename.isEmpty()) {
-            System.out.println("filename without ext was empty for path: " + absPath);
+//            System.out.println("filename without ext was empty for path: " + absPath);
             return;
         }
 
