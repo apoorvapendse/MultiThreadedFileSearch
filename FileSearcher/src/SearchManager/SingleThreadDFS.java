@@ -1,14 +1,10 @@
 package SearchManager;
 
+import FIleNameMatcher.FileNameMatcher;
 import Indexer.DirNode;
 import Indexer.FileType;
 import Indexer.IndexManager;
 import Indexer.Node;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class SingleThreadDFS {
     SingleThreadDFS(IndexManager indexManager, String key, int limit) {
@@ -29,8 +25,5 @@ public class SingleThreadDFS {
                 performDFS(key, (DirNode) child, fm);
             }
         }
-
     }
-
-
 }

@@ -1,4 +1,4 @@
-package SearchManager;
+package FIleNameMatcher;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class FileNameMatcher {
         }
     }
 
-    private BoundedPriorityQueue<FileMatchNode> matchedFiles;
+    private final BoundedPriorityQueue<FileMatchNode> matchedFiles;
 
     public FileNameMatcher(int maxMatches) {
         matchedFiles = new BoundedPriorityQueue<FileMatchNode>(maxMatches, (f1, f2) -> {
@@ -94,7 +94,7 @@ public class FileNameMatcher {
         filename = filename.toLowerCase();
         key = key.toLowerCase();
         if (filename.isEmpty()) {
-            System.out.println("filename without ext was empty for path: " + absPath);
+//            System.out.println("filename without ext was empty for path: " + absPath);
             return;
         }
 
