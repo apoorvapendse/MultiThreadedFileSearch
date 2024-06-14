@@ -16,7 +16,7 @@ public class Main {
 
 //        String searchTerm = args[0];
         long startTime = System.currentTimeMillis();
-        IndexManager im = new IndexManager(Path.of("C:/Users/Administrator/Documents/GitHub/MultiThreadedFileSearch").toAbsolutePath().toString());
+        IndexManager im = new IndexManager(Path.of("C:/Users/Administrator/Documents/GitHub/MultiThreadedFileSearch/FileSearcher/search").toAbsolutePath().toString());
 
 
         long difference = System.currentTimeMillis() - startTime;
@@ -44,8 +44,10 @@ public class Main {
 
 
 
-        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
-        System.out.println(res);
+//        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
+//        System.out.println(res);
+
+        SearchManager.searchWithinFiles(im,"deer");
     }
 
 }

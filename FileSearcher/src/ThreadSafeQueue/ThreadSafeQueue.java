@@ -14,6 +14,7 @@ public class ThreadSafeQueue<T> {
         this.lock = new Object();
     }
 
+
     public void offer(T obj) {
         synchronized (lock) {
             while (arr.size() == maxSize) {

@@ -21,4 +21,9 @@ public class SearchManager {
     public static void singleThreadedDFS(IndexManager im, String key, int limit) {
         new SingleThreadDFS(im, key, limit);
     }
+
+    public static void searchWithinFiles(IndexManager im, String key)
+    {
+        new SearchWithinFiles(im.getHead(),key);
+    }
 }
