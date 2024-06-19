@@ -4,34 +4,28 @@ import Indexer.DirNode;
 
 import java.io.*;
 
-public class SerializationManager
-{
+public class SerializationManager {
 
-    public void serialize(DirNode root,String path)
-    {
+    public void serialize(DirNode root, String path) {
         File f = new File(path);
-        try{
+        try {
             FileOutputStream fileOutputStream = new FileOutputStream(f);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 
             objectOutputStream.writeObject(root);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public DirNode deserialize(String path)
-    {
+    public DirNode deserialize(String path) {
         File f = new File(path);
-        try{
+        try {
             FileInputStream fileInputStream = new FileInputStream(f);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            DirNode root =(DirNode) objectInputStream.readObject();
+            DirNode root = (DirNode) objectInputStream.readObject();
             return root;
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return null;

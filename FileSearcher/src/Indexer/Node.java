@@ -2,8 +2,7 @@ package Indexer;
 
 import java.io.Serializable;
 
-public class Node implements Serializable
-{
+public class Node implements Serializable {
     public String filename;
     public FileType fileType;
     public String absolutePath;
