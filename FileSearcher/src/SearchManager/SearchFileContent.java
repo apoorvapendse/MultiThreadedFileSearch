@@ -4,6 +4,7 @@ import Indexer.DirNode;
 import Indexer.FileType;
 import Indexer.IndexManager;
 import Indexer.Node;
+import ThreadPoolManager.ThreadPoolManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,5 +42,16 @@ public class SearchFileContent {
         }
 
         return result;
+    }
+
+    public static Map<Node, String> searchForTextMultiThreaded(IndexManager im, String key) {
+        /*
+         * works on the concept of work stealing queue
+         * a producer thread explorers the directory structure
+         * consumer threads scan the file line by line for strings to match
+         */
+        ThreadPoolManager tpm = new ThreadPoolManager(4);
+        DirNode root = im.getHead();
+        return tpm.startFileContentSearching(root, key);
     }
 }

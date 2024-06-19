@@ -27,4 +27,8 @@ public class SearchManager {
     public static Map<Node, String> searchWithinFiles(IndexManager im, String key) {
         return SearchFileContent.searchForText(im, key);
     }
+
+    public static Map<Node, String> multiThreadedSearchFileContent(IndexManager im, String key) {
+        return SearchFileContent.searchForTextMultiThreaded(im, key);
+    }
 }
