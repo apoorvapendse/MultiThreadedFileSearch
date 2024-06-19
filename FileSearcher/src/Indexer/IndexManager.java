@@ -4,8 +4,8 @@ package Indexer;
 public class IndexManager {
 
     private DirNode head;
-    public IndexManager(String rootFolderPath)
-    {
+
+    public IndexManager(String rootFolderPath) {
         IndexCreator ic = new IndexCreator();
 //        IndexPrinter indexPrinter = new IndexPrinter();
 
@@ -17,8 +17,8 @@ public class IndexManager {
     public DirNode getHead() {
         return head;
     }
-    public void setHead(DirNode root)
-    {
+
+    public void setHead(DirNode root) {
         this.head = root;
     }
 }

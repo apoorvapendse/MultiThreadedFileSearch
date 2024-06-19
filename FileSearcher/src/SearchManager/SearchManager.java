@@ -1,10 +1,12 @@
 package SearchManager;
 
 import Indexer.IndexManager;
+import Indexer.Node;
 
 import java.util.List;
+import java.util.Map;
 
-// implements all the search algorithms
+// common class to call all the search algorithms
 public class SearchManager {
     public SearchManager() {
         System.out.println(" Search Manager Constructor");
@@ -22,8 +24,7 @@ public class SearchManager {
         new SingleThreadDFS(im, key, limit);
     }
 
-    public static void searchWithinFiles(IndexManager im, String key)
-    {
-        new SearchWithinFiles(im.getHead(),key);
+    public static Map<Node, String> searchWithinFiles(IndexManager im, String key) {
+        return SearchFileContent.searchForText(im, key);
     }
 }

@@ -1,10 +1,13 @@
 import Indexer.DirNode;
 import Indexer.IndexManager;
 import Indexer.IndexPrinter;
+import Indexer.Node;
 import SearchManager.SearchManager;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+
 import Serializer.SerializationManager;
 
 
@@ -47,7 +50,10 @@ public class Main {
 //        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
 //        System.out.println(res);
 
-        SearchManager.searchWithinFiles(im,"deer");
+        Map<Node, String> res = SearchManager.searchWithinFiles(im,"deer");
+        for(Map.Entry<Node, String> entry: res.entrySet()) {
+            System.out.println(entry.getKey().filename + " : " + entry.getValue());
+        }
     }
 
 }
