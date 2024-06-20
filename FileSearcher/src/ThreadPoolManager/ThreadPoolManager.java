@@ -78,10 +78,10 @@ public class ThreadPoolManager {
         for (int i = 0; i < maxThreads; i++) {
             Thread t = new Thread(() -> {
                 // BFS Worker
-                System.out.println("BFS worker" + Thread.currentThread().getName());
                 while (true) {
                     DirNode curr = q.poll();
                     if (curr == null || curr.getChildren() == null) {
+                        System.out.println(Thread.currentThread().getName() + " committed suicide");
                         return;
                     }
                     for (Node child : curr.getChildren()) {
