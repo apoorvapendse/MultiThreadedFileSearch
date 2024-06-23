@@ -1,58 +1,51 @@
+import DisplayOutput.PrintFileSearchResults;
 import Indexer.IndexManager;
-import Indexer.IndexPrinter;
-import Indexer.Node;
 import SearchManager.SearchManager;
 
-import java.nio.file.Path;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.List;
 
-import Serializer.SerializationManager;
+
+import static java.lang.Integer.parseInt;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-//        if(args.length < 1) {
-//            throw new Exception("Pass proper arguments");
-//        }
-
-//        String searchTerm = args[0];
-        long startTime = System.currentTimeMillis();
-        IndexManager im = new IndexManager(Path.of("C:/Users/Administrator/Documents/GitHub/MultiThreadedFileSearch/FileSearcher/search").toAbsolutePath().toString());
-
-
-        long difference = System.currentTimeMillis() - startTime;
-        double diff = (difference/1000);
-        System.out.println("Indexing done in "+diff+" seconds");
-
-
-        //serialize the root node after indexing.
-        SerializationManager sm = new SerializationManager();
-        sm.serialize(im.getHead(),"save.txt");
-
-
-
-        im.setHead(null);
-
-        IndexPrinter ip = new IndexPrinter();
-
-        im.setHead(sm.deserialize("save.txt"));
-//        ip.printIndex(im.getHead());
-
-
-
-//        System.out.println("Single Threaded DFS");
-//        SearchManager.singleThreadedDFS(im,"hello.txt");
-
-
-
-//        List<String> res = SearchManager.multiThreadedBFS(im, "hello.txt");
-//        System.out.println(res);
-
-//        Map<Node, String> res = SearchManager.searchWithinFiles(im,"deer");
-        Map<Node, String> res = SearchManager.multiThreadedSearchFileContent(im, "deer");
-        for(Map.Entry<Node, String> entry: res.entrySet()) {
-            System.out.println(entry.getKey().filename + " : " + entry.getValue());
+        if(args.length < 2 || args.length > 3) {
+            System.out.println("usage: mfs /path/to/search-dir(optional) search-key limit");
+            throw new Exception("Pass proper arguments");
         }
-    }
+        String searchTerm;
+        String indexingPath;
+        int limit;
 
+        /*
+         * when only search term is passed as arg then
+         * current working dir is indexed
+         * else the given path is indexed
+         */
+        if(args.length == 2) {
+            indexingPath = Paths.get(".").toAbsolutePath().normalize().toString();
+            searchTerm = args[0];
+            limit = parseInt(args[1]);
+        } else {
+            indexingPath = args[0];
+            searchTerm = args[1];
+            limit = parseInt(args[2]);
+        }
+        System.out.print("\033[H\033[2J"); // clears console
+
+        // indexing
+        long start = System.currentTimeMillis();
+        IndexManager im  = new IndexManager(indexingPath);
+        long end = System.currentTimeMillis();
+        System.out.println("Indexing done in: " + (end - start) + " ms");
+
+        // mBFS file searching
+        start = System.currentTimeMillis();
+        List<String> res = SearchManager.multiThreadedBFS(im, searchTerm, limit);
+        end = System.currentTimeMillis();
+        PrintFileSearchResults.printAbsolutePaths(res);
+        System.out.println("Search done in: " + (end - start) + " ms");
+    }
 }
