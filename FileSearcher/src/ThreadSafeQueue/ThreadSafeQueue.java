@@ -30,7 +30,7 @@ public class ThreadSafeQueue<T> {
     }
 
     public T poll() {
-        long endTime = System.currentTimeMillis() + 1;
+        long endTime = System.currentTimeMillis() + 100;
         synchronized (lock) {
             while (arr.isEmpty()) {
                 if (System.currentTimeMillis() >= endTime) return null;
