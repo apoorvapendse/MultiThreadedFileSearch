@@ -40,11 +40,12 @@ public class ThreadPoolManager {
                     try {
                         for (File file : Objects.requireNonNull(currDir.listFiles())) {
                             if (file.isDirectory()) {
-                                if(file.getName().equals("node_modules") || file.getName().equals(".git"))continue;
+                                if(file.getName().equals("node_modules") || file.getName().equals(".git") )continue;
                                 DirNode subdirectory = new DirNode(file.getName(), FileType.DIR, file.getAbsolutePath(), new ArrayList<>());
                                 curr.addChild(subdirectory);
                                 q.offer(subdirectory);
                             } else if (file.isFile()) {
+                                if(file.getName().contains(".class") || file.getName().contains(".gz"))continue;
                                 FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
                                 curr.addChild(subfile);
                             }
