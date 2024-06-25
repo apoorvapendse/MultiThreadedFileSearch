@@ -12,12 +12,12 @@ public class GrepBenchmark {
     public static void main(String[] args) {
 
         long startTime = System.currentTimeMillis();
-        IndexManager im = new IndexManager("C:/Users/Administrator/Documents");
+        IndexManager im = new IndexManager("C:");
 
        Map<Node,String> map =  SearchManager.multiThreadedSearchFileContent(im,"deer");
        for(Map.Entry<Node,String> entry :map.entrySet())
        {
-           System.out.println(entry.getKey()+":"+entry.getValue());
+           System.out.println(entry.getKey().filename+":"+entry.getValue());
        }
 
        long endTime = System.currentTimeMillis() - startTime;
