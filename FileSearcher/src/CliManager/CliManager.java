@@ -11,7 +11,7 @@ public class CliManager {
     public static void parseArgs(String[] args)
     {
 
-        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList(new String[]{"-s", "-i", "-f", "-ignore"}));
+        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList(new String[]{"-s", "-i", "-f", "-ignore","-r"}));
 
 
         Map<String,String> flagToArg = new HashMap<>();
@@ -53,11 +53,18 @@ public class CliManager {
             throw new MissingFormatArgumentException(currFlag +"expects an arg");
         }
 
+        if(flagToArg.containsKey("-i") && flagToArg.containsKey("-r"))
+        {
+            throw new IllegalArgumentException("Cannot use -i and -r flag at the same time, might cause conflicting root directories");
+        }
         System.out.println("Printing flags and their respective args");
         for(Map.Entry<String,String> entry : flagToArg.entrySet())
         {
             System.out.println(entry.getKey()+" : "+ entry.getValue());
         }
+
+
+
 
 
 
