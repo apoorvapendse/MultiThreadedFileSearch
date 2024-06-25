@@ -1,13 +1,19 @@
 package CliManager;
 
+import Indexer.DirNode;
 import Indexer.IndexManager;
+import Indexer.Node;
+import SearchManager.SearchManager;
+import Serializer.SerializationManager;
 
+import java.nio.file.Path;
 import java.util.*;
 
 public class CliManager {
 
 
-
+    static IndexManager im;
+    static SerializationManager sm = new SerializationManager();
     public static void parseArgs(String[] args)
     {
 
@@ -64,12 +70,37 @@ public class CliManager {
         }
 
 
-
-
-
-
-
-
+        executeCommands(flagToArg,System.getProperty("user.dir"));
 
     }
+
+    public static void executeCommands(Map<String,String> flagToArg,String cwd)
+    {
+//        System.out.println(cwd);
+        if(flagToArg.containsKey("-i"))
+        {
+            im = new IndexManager(cwd);
+            sm.serialize(im.getHead(),"save.txt");
+
+            //execute further flags...
+        }
+        else if(flagToArg.containsKey("-r"))
+        {
+            System.out.println(flagToArg.get("-r"));
+            im = new IndexManager(flagToArg.get("-r"));
+            sm.serialize(im.getHead(),"save.txt");
+
+            //execute further flags...
+
+        }
+        else{
+            //means the user wants to use the previous index.
+
+            DirNode root = sm.deserialize("save.txt");
+
+            System.out.println(root.filename);
+            //execute further flags...
+        }
+    }
+
 }
