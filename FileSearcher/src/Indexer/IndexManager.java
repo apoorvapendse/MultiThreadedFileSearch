@@ -7,11 +7,11 @@ public class IndexManager {
 
     public IndexManager(String rootFolderPath) {
         IndexCreator ic = new IndexCreator();
-//        IndexPrinter indexPrinter = new IndexPrinter();
-
         head = ic.createIndex(rootFolderPath);
-//        indexPrinter.printIndex(head);
+    }
 
+    public IndexManager(DirNode root) {
+        this.head = root;
     }
 
     public DirNode getHead() {
