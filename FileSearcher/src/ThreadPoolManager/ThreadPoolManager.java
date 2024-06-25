@@ -32,7 +32,7 @@ public class ThreadPoolManager {
                 while (true) {
                     DirNode curr = q.poll();
                     if (curr == null) {
-                        System.out.println(Thread.currentThread().getName() + " has stopped execution");
+//                        System.out.println(Thread.currentThread().getName() + " has stopped execution");
                         return;
                     }
 
