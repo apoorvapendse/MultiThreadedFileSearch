@@ -50,10 +50,14 @@ public class SearchFileContent {
          * a producer thread explorers the directory structure
          * consumer threads scan the file line by line for strings to match
          */
+
+        DirNode root = im.getHead();
+
         int maxThreads = Runtime.getRuntime().availableProcessors();
         ThreadPoolManager tpm = new ThreadPoolManager(maxThreads);
-        DirNode root = im.getHead();
-        return tpm.startFileContentSearching(root, key);
+        Map<Node, String> result = tpm.startFileContentSearching(root, key);
 
+        System.out.println("Files searched: " + tpm.getFileCount());
+        return result;
     }
 }

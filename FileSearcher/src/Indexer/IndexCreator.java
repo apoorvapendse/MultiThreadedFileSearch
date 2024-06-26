@@ -10,8 +10,10 @@ public class IndexCreator {
     public DirNode createIndex(String rootFolderPath) {
         File rootFolder = new File(rootFolderPath);
         DirNode root = new DirNode(rootFolder.getName(), FileType.DIR, rootFolder.getAbsolutePath(), new ArrayList<Node>());
-        ThreadPoolManager tpm = new ThreadPoolManager(4);
+        int maxThreads = Runtime.getRuntime().availableProcessors();
+        ThreadPoolManager tpm = new ThreadPoolManager(maxThreads);
         tpm.startIndexingThreads(root);
+        System.out.println("Files indexed: " + tpm.getFileCount());
         return root;
     }
 
