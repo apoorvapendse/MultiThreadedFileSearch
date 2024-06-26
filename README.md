@@ -9,6 +9,11 @@
 ##### Others
 - `-ignore [OPTIONS]`:
 
+**NOTE**
+1. Multithreaded search is performed using maximum available physical threads on cpu
+2. Searching is case-insensitive
+3. Common folders such as `.git node_modues` and files with extension `.class .gz` are ignored by default
+
 ## Features Implemented
 - `CLIMananger` package for parsing out CLI args
 - Search space optimization similar to `ripgrep`

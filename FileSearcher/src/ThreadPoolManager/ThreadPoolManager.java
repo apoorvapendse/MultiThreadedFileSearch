@@ -12,14 +12,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadPoolManager {
     private final ThreadSafeQueue<DirNode> q;
     private final int maxThreads;
+    private final AtomicInteger fileCount = new AtomicInteger(0);
 
     public ThreadPoolManager(int n) {
         this.maxThreads = n;
         this.q = new ThreadSafeQueue<DirNode>();
+    }
+
+    public int getFileCount() {
+        return fileCount.get();
     }
 
     public void startIndexingThreads(DirNode root) {
@@ -28,11 +34,14 @@ public class ThreadPoolManager {
 
         for (int i = 0; i < maxThreads; i++) {
             Thread t = new Thread(() -> {
+                // count variable to keep track of no of files indexed by a single thread
+                int threadFileCount = 0;
                 // Indexing Worker
                 while (true) {
                     DirNode curr = q.poll();
                     if (curr == null) {
 //                        System.out.println(Thread.currentThread().getName() + " has stopped execution");
+                        this.fileCount.addAndGet(threadFileCount);
                         return;
                     }
 
@@ -40,14 +49,15 @@ public class ThreadPoolManager {
                     try {
                         for (File file : Objects.requireNonNull(currDir.listFiles())) {
                             if (file.isDirectory()) {
-                                if(file.getName().equals("node_modules") || file.getName().equals(".git") )continue;
+                                if (file.getName().equals("node_modules") || file.getName().equals(".git")) continue;
                                 DirNode subdirectory = new DirNode(file.getName(), FileType.DIR, file.getAbsolutePath(), new ArrayList<>());
                                 curr.addChild(subdirectory);
                                 q.offer(subdirectory);
                             } else if (file.isFile()) {
-                                if(file.getName().contains(".class") || file.getName().contains(".gz"))continue;
+                                if (file.getName().contains(".class") || file.getName().contains(".gz")) continue;
                                 FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
                                 curr.addChild(subfile);
+                                threadFileCount++;
                             }
                         }
                     } catch (Exception e) {
@@ -79,11 +89,14 @@ public class ThreadPoolManager {
 
         for (int i = 0; i < maxThreads; i++) {
             Thread t = new Thread(() -> {
+                // count variable to keep track of no of files searched by a single thread
+                int threadFileCount = 0;
                 // BFS Worker
                 while (true) {
                     DirNode curr = q.poll();
                     if (curr == null || curr.getChildren() == null) {
                         System.out.println(Thread.currentThread().getName() + " committed suicide");
+                        fileCount.getAndAdd(threadFileCount);
                         return;
                     }
                     for (Node child : curr.getChildren()) {
@@ -94,6 +107,7 @@ public class ThreadPoolManager {
                         // else if file matches to search key append to results
                         else {
                             fm.match(child.filename, searchKey, child.absolutePath);
+                            threadFileCount++;
                         }
                     }
                 }
@@ -129,6 +143,7 @@ public class ThreadPoolManager {
         Queue<DirNode> bfsQueue = new LinkedList<>();
 
         Thread producer = new Thread(() -> {
+            int threadFileCount = 0;
             bfsQueue.offer(root);
             while (!bfsQueue.isEmpty()) {
                 DirNode curr = bfsQueue.poll();
@@ -137,12 +152,14 @@ public class ThreadPoolManager {
                     if (child.fileType == FileType.DIR) {
                         bfsQueue.offer((DirNode) child);
                     }
-                    // else if it's a file offer it to this.queue for consumers
+                    // else if it's a file offer it to fileQueue for consumers
                     else {
                         fileQueue.offer((FileNode) child);
+                        threadFileCount++;
                     }
                 }
             }
+            fileCount.getAndAdd(threadFileCount);
         });
         producer.start();
     }

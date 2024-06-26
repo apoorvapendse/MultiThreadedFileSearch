@@ -108,7 +108,6 @@ public class FileNameMatcher {
     public List<String> getMatchedFiles() {
         List<String> matchedFileStrings = new ArrayList<>();
         for (FileMatchNode matchedNode : matchedFiles) {
-            System.out.println(matchedNode.relevancyIndex);
             matchedFileStrings.add(matchedNode.toString());
         }
 
