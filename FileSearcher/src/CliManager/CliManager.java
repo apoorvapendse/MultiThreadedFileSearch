@@ -2,6 +2,7 @@ package CliManager;
 
 import Indexer.DirNode;
 import Indexer.IndexManager;
+import SearchManager.SearchManager;
 import Serializer.SerializationManager;
 
 import java.util.*;
@@ -11,10 +12,13 @@ public class CliManager {
 
     static IndexManager im;
     static SerializationManager sm = new SerializationManager();
+    static HashSet<String> ignoredFilesSet = new HashSet<>();
+    static HashSet<String> ignoredDirsSet = new HashSet<>();
+
 
     public static void parseArgs(String[] args) {
 
-        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-ignore", "-r"));
+        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-igf", "-igd", "-r"));
 
         Map<String, String> flagToArg = new HashMap<>();
         boolean expectArg = false;
@@ -60,14 +64,37 @@ public class CliManager {
     }
 
     public static void executeCommands(Map<String, String> flagToArg, String cwd) {
+
         if (flagToArg.containsKey("-i")) {
-            im = new IndexManager(cwd);
+
+            if(flagToArg.containsKey("-igf"))
+            {
+                String filesString = flagToArg.get("-igf");
+                ignoredFilesSet = getIgnoredSet(filesString);
+            }
+            if(flagToArg.containsKey("-igd"))
+            {
+                String dirsString = flagToArg.get("-igd");
+                ignoredDirsSet= getIgnoredSet(dirsString);
+            }
+
+            im = new IndexManager(cwd,ignoredFilesSet,ignoredDirsSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
+
+            if(flagToArg.containsKey("-s"))
+            {
+                String searchArg = flagToArg.get("-s");
+                List<String> results = SearchManager.multiThreadedBFS(im,searchArg,10);
+                for(String result:results)
+                {
+                    System.out.println(result);
+                }
+            }
 
             //execute further flags...
         } else if (flagToArg.containsKey("-r")) {
             System.out.println(flagToArg.get("-r"));
-            im = new IndexManager(flagToArg.get("-r"));
+            im = new IndexManager(flagToArg.get("-r"),ignoredFilesSet,ignoredDirsSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             //execute further flags...
@@ -81,4 +108,13 @@ public class CliManager {
             //execute further flags...
         }
     }
+
+    private static HashSet<String> getIgnoredSet(String ignoreString)
+    {
+        String[] ignoredNames = ignoreString.split(" ");
+        HashSet<String> ignoredNodes = new HashSet<>(Arrays.asList(ignoredNames));
+        return ignoredNodes;
+    }
+
+
 }

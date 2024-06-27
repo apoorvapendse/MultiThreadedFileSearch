@@ -28,7 +28,7 @@ public class ThreadPoolManager {
         return fileCount.get();
     }
 
-    public void startIndexingThreads(DirNode root) {
+    public void startIndexingThreads(DirNode root,HashSet<String> ignoredFilesSet, HashSet<String> ignoredDirsSet) {
         q.offer(root);
         List<Thread> threadList = new ArrayList<>();
 
@@ -49,12 +49,12 @@ public class ThreadPoolManager {
                     try {
                         for (File file : Objects.requireNonNull(currDir.listFiles())) {
                             if (file.isDirectory()) {
-                                if (file.getName().equals("node_modules") || file.getName().equals(".git")) continue;
+                                if (file.getName().equals("node_modules") || file.getName().equals(".git") || ignoredDirsSet.contains(file.getName())) continue;
                                 DirNode subdirectory = new DirNode(file.getName(), FileType.DIR, file.getAbsolutePath(), new ArrayList<>());
                                 curr.addChild(subdirectory);
                                 q.offer(subdirectory);
                             } else if (file.isFile()) {
-                                if (file.getName().contains(".class") || file.getName().contains(".gz")) continue;
+                                if (file.getName().contains(".class") || file.getName().contains(".gz") || ignoredFilesSet.contains(file.getName())) continue;
                                 FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
                                 curr.addChild(subfile);
                                 threadFileCount++;
@@ -95,7 +95,7 @@ public class ThreadPoolManager {
                 while (true) {
                     DirNode curr = q.poll();
                     if (curr == null || curr.getChildren() == null) {
-                        System.out.println(Thread.currentThread().getName() + " committed suicide");
+//                        System.out.println(Thread.currentThread().getName() + " committed suicide");
                         fileCount.getAndAdd(threadFileCount);
                         return;
                     }
