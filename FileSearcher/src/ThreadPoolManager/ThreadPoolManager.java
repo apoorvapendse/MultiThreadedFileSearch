@@ -28,7 +28,7 @@ public class ThreadPoolManager {
         return fileCount.get();
     }
 
-    public void startIndexingThreads(DirNode root,HashSet<String> ignoredFilesSet, HashSet<String> ignoredDirsSet) {
+    public void startIndexingThreads(DirNode root,HashSet<String> ignoredFilesSet, HashSet<String> ignoredDirsSet, HashSet<String> ignoredExtSet) {
         q.offer(root);
         List<Thread> threadList = new ArrayList<>();
 
@@ -54,7 +54,18 @@ public class ThreadPoolManager {
                                 curr.addChild(subdirectory);
                                 q.offer(subdirectory);
                             } else if (file.isFile()) {
-                                if (file.getName().contains(".class") || file.getName().contains(".gz") || ignoredFilesSet.contains(file.getName())) continue;
+
+                                String[] splitFileName = file.getName().split("\\.");
+//                                System.out.println(Arrays.toString(splitFileName));
+                                String ext = "";
+                                if(splitFileName.length >=1)
+                                {
+                                    ext = splitFileName[splitFileName.length - 1];
+                                }
+
+
+                                if (ignoredExtSet.contains(ext) || file.getName().contains(".class")
+                                        || file.getName().contains(".gz") || ignoredFilesSet.contains(file.getName())) continue;
                                 FileNode subfile = new FileNode(file.getName(), FileType.FILE, file.getAbsolutePath());
                                 curr.addChild(subfile);
                                 threadFileCount++;

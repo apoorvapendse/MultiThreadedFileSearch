@@ -14,11 +14,12 @@ public class CliManager {
     static SerializationManager sm = new SerializationManager();
     static HashSet<String> ignoredFilesSet = new HashSet<>();
     static HashSet<String> ignoredDirsSet = new HashSet<>();
+    static HashSet<String> ignoredExtSet = new HashSet<>();
 
 
     public static void parseArgs(String[] args) {
 
-        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-igf", "-igd", "-r"));
+        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-igf", "-igd", "-r","-ige"));
 
         Map<String, String> flagToArg = new HashMap<>();
         boolean expectArg = false;
@@ -77,8 +78,13 @@ public class CliManager {
                 String dirsString = flagToArg.get("-igd");
                 ignoredDirsSet= getIgnoredSet(dirsString);
             }
+            if(flagToArg.containsKey("-ige"))
+            {
+                String extString = flagToArg.get("-ige");
+                ignoredExtSet = getIgnoredSet(extString);
+            }
 
-            im = new IndexManager(cwd,ignoredFilesSet,ignoredDirsSet);
+            im = new IndexManager(cwd,ignoredFilesSet,ignoredDirsSet,ignoredExtSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             if(flagToArg.containsKey("-s"))
@@ -94,7 +100,7 @@ public class CliManager {
             //execute further flags...
         } else if (flagToArg.containsKey("-r")) {
             System.out.println(flagToArg.get("-r"));
-            im = new IndexManager(flagToArg.get("-r"),ignoredFilesSet,ignoredDirsSet);
+            im = new IndexManager(flagToArg.get("-r"),ignoredFilesSet,ignoredDirsSet,ignoredExtSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             //execute further flags...
