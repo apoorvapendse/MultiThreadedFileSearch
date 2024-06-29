@@ -1,10 +1,10 @@
 package FIleNameMatcher;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PatternMatcher {
-    final int MAX_CHAR = 256;
-    int[] badChar;
+    Map<Character, Integer> badChar;
     final String pattern;
 
     public PatternMatcher(String pattern) {
@@ -13,11 +13,11 @@ public class PatternMatcher {
     }
 
     private void calcLastOccurrence() {
-        this.badChar = new int[MAX_CHAR];
-        Arrays.fill(badChar, -1);
+        this.badChar = new HashMap<>();
         for (int i = 0; i < pattern.length(); i++) {
-            badChar[(int) pattern.charAt(i)] = i;
+            badChar.put(pattern.charAt(i), i);
         }
+
     }
 
     public boolean containsPattern(String text) {
@@ -34,7 +34,7 @@ public class PatternMatcher {
                 return true;
             }
 
-            int lastOccInPattern = badChar[text.charAt(offset + patternPtr)];
+            int lastOccInPattern = badChar.getOrDefault(text.charAt(offset + patternPtr), -1);
             offset += Math.max(1, patternPtr - lastOccInPattern);
         }
 

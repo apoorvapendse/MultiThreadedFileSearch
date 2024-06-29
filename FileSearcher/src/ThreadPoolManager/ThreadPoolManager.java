@@ -184,8 +184,8 @@ public class ThreadPoolManager {
                         BufferedReader br = new BufferedReader(new FileReader(currFile));
                         String line;
                         while ((line = br.readLine()) != null) {
-//                            if (line.contains(searchKey)) {
-                            if (pm.containsPattern(line)) {
+                            if (line.contains(searchKey)) {
+//                            if (pm.containsPattern(line)) {
                                 result.put(fileNode, line);
                             }
                         }
