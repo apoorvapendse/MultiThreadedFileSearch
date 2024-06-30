@@ -185,7 +185,6 @@ public class ThreadPoolManager {
                         String line;
                         while ((line = br.readLine()) != null) {
                             if (line.contains(searchKey)) {
-//                            if (pm.containsPattern(line)) {
                                 result.put(fileNode, line);
                             }
                         }
