@@ -18,30 +18,41 @@ public class CliManager {
 
 
     public static void parseArgs(String[] args) {
-
-        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-igf", "-igd", "-r","-ige"));
+        /*
+         * -s : search for file
+         * -i : index cwd
+         * -f : search file content
+         * -r : index specific directory
+         * -igf : ignore file
+         * -igd : ignore directory
+         * -ige : ignore extension
+         */
+        HashSet<String> allowedFlags = new HashSet<>(Arrays.asList("-s", "-i", "-f", "-igf", "-igd", "-r", "-ige"));
 
         Map<String, String> flagToArg = new HashMap<>();
         boolean expectArg = false;
         String currFlag = "";
         for (String arg : args) {
-            if (expectArg && arg.startsWith("-")) //flag after flag;
-            {
+            // flag after flag;
+            if (expectArg && arg.startsWith("-")) {
                 throw new IllegalArgumentException(currFlag + " expects an argument");
-            } else if (!expectArg && arg.startsWith("-")) //new flag
-            {
+            }
+            // new flag
+            else if (!expectArg && arg.startsWith("-")) {
                 if (!allowedFlags.contains(arg)) {
                     throw new IllegalArgumentException("Flag not recognized:" + arg);
                 }
-                if (!arg.equals("-i"))//-i doesn't expect arg
-                {
+                // -i doesn't expect arg
+                if (!arg.equals("-i")) {
                     expectArg = true;
                 }
                 currFlag = arg;
                 flagToArg.put(arg, "");
-            } else if (expectArg && !arg.startsWith("-")) //arg for current flag
-            {
-                expectArg = false;//we can again accept flag as the next argument.
+            }
+            // arg for current flag
+            else if (expectArg && !arg.startsWith("-")) {
+                // we can again accept flag as the next argument.
+                expectArg = false;
                 flagToArg.put(currFlag, arg);
             } else if (!expectArg && !arg.startsWith(("`"))) {
                 throw new IllegalArgumentException(currFlag + " does not expect an argument");
@@ -68,46 +79,48 @@ public class CliManager {
 
         if (flagToArg.containsKey("-i")) {
 
-            if(flagToArg.containsKey("-igf"))
-            {
+            if (flagToArg.containsKey("-igf")) {
                 String filesString = flagToArg.get("-igf");
                 ignoredFilesSet = getIgnoredSet(filesString);
             }
-            if(flagToArg.containsKey("-igd"))
-            {
+            if (flagToArg.containsKey("-igd")) {
                 String dirsString = flagToArg.get("-igd");
-                ignoredDirsSet= getIgnoredSet(dirsString);
+                ignoredDirsSet = getIgnoredSet(dirsString);
             }
-            if(flagToArg.containsKey("-ige"))
-            {
+            if (flagToArg.containsKey("-ige")) {
                 String extString = flagToArg.get("-ige");
                 ignoredExtSet = getIgnoredSet(extString);
             }
 
-            im = new IndexManager(cwd,ignoredFilesSet,ignoredDirsSet,ignoredExtSet);
+            im = new IndexManager(cwd, ignoredFilesSet, ignoredDirsSet, ignoredExtSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
-            if(flagToArg.containsKey("-s"))
-            {
+            if (flagToArg.containsKey("-s")) {
                 String searchArg = flagToArg.get("-s");
-                List<String> results = SearchManager.multiThreadedBFS(im,searchArg,10);
-                for(String result:results)
-                {
+                List<String> results;
+                // if indexed files are more than 10,000 then multi threaded search is used
+                if (im.getFileCount() > 10000) {
+                    results = SearchManager.multiThreadedBFS(im, searchArg, 10);
+                } else {
+                    results = SearchManager.singleThreadedBFS(im, searchArg, 10);
+                }
+                for (String result : results) {
                     System.out.println(result);
                 }
             }
 
-            //execute further flags...
-        } else if (flagToArg.containsKey("-r")) {
+        }
+        //execute further flags...
+        else if (flagToArg.containsKey("-r")) {
             System.out.println(flagToArg.get("-r"));
-            im = new IndexManager(flagToArg.get("-r"),ignoredFilesSet,ignoredDirsSet,ignoredExtSet);
+            im = new IndexManager(flagToArg.get("-r"), ignoredFilesSet, ignoredDirsSet, ignoredExtSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             //execute further flags...
 
         } else {
             //means the user wants to use the previous index.
-
+            // TODO: make runtime indexing the default instead of deserialization
             DirNode root = sm.deserialize("mtfs-index.txt");
 
             System.out.println(root.filename);
@@ -115,8 +128,7 @@ public class CliManager {
         }
     }
 
-    private static HashSet<String> getIgnoredSet(String ignoreString)
-    {
+    private static HashSet<String> getIgnoredSet(String ignoreString) {
         String[] ignoredNames = ignoreString.split(" ");
         HashSet<String> ignoredNodes = new HashSet<>(Arrays.asList(ignoredNames));
         return ignoredNodes;
