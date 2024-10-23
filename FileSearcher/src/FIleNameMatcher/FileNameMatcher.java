@@ -40,7 +40,7 @@ public class FileNameMatcher {
          * initialize the dist array such as
          * 0 1 2 ... key.length() - 1
          * 1
-         * 2
+         * 2 
          * ..
          * word.length() - 1
          */

@@ -97,14 +97,9 @@ public class CliManager {
 
             if (flagToArg.containsKey("-s")) {
                 String searchArg = flagToArg.get("-s");
-                List<String> results;
-                // if indexed files are more than 10,000 then multi threaded search is used
-                if (im.getFileCount() > 10000) {
-                    results = SearchManager.multiThreadedBFS(im, searchArg, 10);
-                } else {
-                    results = SearchManager.singleThreadedBFS(im, searchArg, 10);
-                }
-                for (String result : results) {
+                List<String> results = SearchManager.multiThreadedBFS(im,searchArg,10);
+                for(String result:results)
+                {
                     System.out.println(result);
                 }
             }
