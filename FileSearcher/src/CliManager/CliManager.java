@@ -97,14 +97,10 @@ public class CliManager {
 
             if (flagToArg.containsKey("-s")) {
                 String searchArg = flagToArg.get("-s");
-                List<String> results;
-                // if indexed files are more than 10,000 then multi threaded search is used
-                if (im.getFileCount() > 10000) {
-                    results = SearchManager.multiThreadedBFS(im, searchArg, 10);
-                } else {
-                    results = SearchManager.singleThreadedBFS(im, searchArg, 10);
-                }
-                for (String result : results) {
+                List<String> results = SearchManager.multiThreadedBFS(im,searchArg,10);
+                List<String> sortedResultsByMatch = results.reversed();
+                for(String result:sortedResultsByMatch)
+                {
                     System.out.println(result);
                 }
             }
@@ -117,7 +113,32 @@ public class CliManager {
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             //execute further flags...
+            if (flagToArg.containsKey("-igf")) {
+                String filesString = flagToArg.get("-igf");
+                ignoredFilesSet = getIgnoredSet(filesString);
+            }
+            if (flagToArg.containsKey("-igd")) {
+                String dirsString = flagToArg.get("-igd");
+                ignoredDirsSet = getIgnoredSet(dirsString);
+            }
+            if (flagToArg.containsKey("-ige")) {
+                String extString = flagToArg.get("-ige");
+                ignoredExtSet = getIgnoredSet(extString);
+            }
 
+            im = new IndexManager(cwd, ignoredFilesSet, ignoredDirsSet, ignoredExtSet);
+            sm.serialize(im.getHead(), "mtfs-index.txt");
+
+            if (flagToArg.containsKey("-s")) {
+                String searchArg = flagToArg.get("-s");
+                List<String> results = SearchManager.multiThreadedBFS(im,searchArg,10);
+
+                List<String> sortedResultsByMatch = results.reversed();
+                for(String result:sortedResultsByMatch)
+                {
+                    System.out.println(result);
+                }
+            }
         } else {
             //means the user wants to use the previous index.
             // TODO: make runtime indexing the default instead of deserialization
