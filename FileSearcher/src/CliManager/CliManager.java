@@ -92,7 +92,7 @@ public class CliManager {
                 ignoredExtSet = getIgnoredSet(extString);
             }
 
-            im = new IndexManager(cwd, ignoredFilesSet, ignoredDirsSet, ignoredExtSet);
+            im = new IndexManager(cwd, ignoredFilesSet, ignoredDirsSet, ignoredExtSet); //since we are using -i
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             if (flagToArg.containsKey("-s")) {
@@ -126,7 +126,6 @@ public class CliManager {
                 ignoredExtSet = getIgnoredSet(extString);
             }
 
-            im = new IndexManager(cwd, ignoredFilesSet, ignoredDirsSet, ignoredExtSet);
             sm.serialize(im.getHead(), "mtfs-index.txt");
 
             if (flagToArg.containsKey("-s")) {
