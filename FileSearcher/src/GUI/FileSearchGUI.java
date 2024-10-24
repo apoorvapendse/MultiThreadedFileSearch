@@ -28,6 +28,11 @@ public class FileSearchGUI {
     private HashSet<String> ignoredFilesSet = new HashSet<>();
     private HashSet<String> ignoredExtensionsSet = new HashSet<>();
     public FileSearchGUI() {
+        UIDefaults defaults = UIManager.getDefaults();
+        Font largeFont = new Font("Dialog", Font.BOLD, 23);
+        defaults.put("Label.font",largeFont);
+        defaults.put("Button.font",largeFont);
+        defaults.put("JTextField.font",largeFont);
         frame = new JFrame("File Search Application");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,6 +44,12 @@ public class FileSearchGUI {
         ignoreFileField = new JTextField(25);
         ignoreExtensionField = new JTextField(25);
 
+        pathField.setFont(largeFont);
+        ignoreFileField.setFont(largeFont);
+        searchField.setFont(largeFont);
+        contentField.setFont(largeFont);
+        ignoreExtensionField.setFont(largeFont);
+
         searchButton = new JButton("Search File");
         contentSearchButton = new JButton("Search Content");
         selectButton = new JButton("Select Directory");
@@ -46,6 +57,8 @@ public class FileSearchGUI {
         ignoreExtensionsButton = new JButton("Ignore Extensions");
 
         outputArea = new JTextArea(15, 40);
+        outputArea.setFont(largeFont);
+
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
 
