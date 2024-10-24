@@ -27,9 +27,9 @@ public class FileSearchGUI {
     // Sets to hold ignored files and extensions
     private HashSet<String> ignoredFilesSet = new HashSet<>();
     private HashSet<String> ignoredExtensionsSet = new HashSet<>();
-
     public FileSearchGUI() {
         frame = new JFrame("File Search Application");
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 600);
 

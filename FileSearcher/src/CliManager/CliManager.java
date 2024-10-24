@@ -109,7 +109,7 @@ public class CliManager {
                     results = SearchManager.singleThreadedBFS(im, searchArg, 10);
                 }
                 System.out.println("Search results for '" + searchArg + "':");
-                for (String result : results) {
+                for (String result : results.reversed()) {
                     System.out.println(result);
                 }
                 System.out.println("Search for file '" + searchArg + "' completed.");
@@ -131,7 +131,8 @@ public class CliManager {
                     results = SearchManager.singleThreadedBFS(im, searchArg, 10);
                 }
                 System.out.println("Search results for '" + searchArg + "':");
-                for (String result : results) {
+
+                for (String result : results.reversed()) {
                     System.out.println(result);
                 }
                 System.out.println("Search for file '" + searchArg + "' completed.");
