@@ -247,11 +247,12 @@ public class FileSearchGUI {
 
         // Add ignored files and extensions dynamically
         if (!ignoredFilesSet.isEmpty()) {
-            args = concatenateArrays(args, new String[]{"-igf", String.join(",", ignoredFilesSet)});
+            args = concatenateArrays(args, new String[]{"-igf", String.join(" ", ignoredFilesSet)});
         }
 
         if (!ignoredExtensionsSet.isEmpty()) {
-            args = concatenateArrays(args, new String[]{"-ige", String.join(",", ignoredExtensionsSet)});
+            args = concatenateArrays(args, new String[]{"-ige", String.join(" ", ignoredExtensionsSet)});
+            outputArea.append(Arrays.toString(args));
         }
 
         return args;
